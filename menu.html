@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu — Chubby Baker & Co</title>
+<meta name="description" content="Full menu and prices — Chubby Baker & Co, Bandra West, Mumbai.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Caveat:wght@600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="top-nav" style="position:relative; background:var(--cocoa);">
+  <a href="index.html" style="display:flex; align-items:center;"><img src="assets/logo.png" alt="Chubby Baker & Co logo" class="logo-img"></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">☰</button>
+</nav>
+
+<div class="nav-scrim" id="navScrim"></div>
+<aside class="nav-panel" id="navPanel" aria-hidden="true">
+  <button class="close-btn" id="navClose" aria-label="Close menu">✕</button>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="occasions.html">Occasions</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="order.html">Order</a></li>
+  </ul>
+</aside>
+
+<header class="page-hero">
+  <div class="container">
+    <h1>Our Menu</h1>
+    <p>All prices in ₹ · Order on WhatsApp</p>
+  </div>
+</header>
+
+<section class="pdf-menu-section">
+  <div class="container">
+    <h2 style="text-align:center; border:none;">Full Menu (PDF)</h2>
+    <div class="pdf-menu-card reveal">
+      <a href="assets/menu.pdf" target="_blank" rel="noopener" class="pdf-menu-link">
+        <span class="pdf-menu-icon">📄</span>
+        <span class="pdf-menu-text">
+          <strong>View Full Menu</strong>
+          <small>Tap to open the branded PDF menu</small>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div id="menuContainer">
+  <p style="text-align:center; padding:40px 0; color:var(--cocoa-soft);">Loading menu…</p>
+</div>
+
+<section class="menu-section" style="text-align:center; padding-bottom:70px;">
+  <a class="underline-link" href="https://wa.me/919167072309?text=Hi!%20I'd%20like%20to%20order%20from%20the%20menu." target="_blank" rel="noopener" style="font-size:1.05rem;">Order on WhatsApp →</a>
+</section>
+
+<script src="scripts/reveal.js" defer></script>
+<script>
+  var toggle = document.getElementById('navToggle');
+  var panel = document.getElementById('navPanel');
+  var scrim = document.getElementById('navScrim');
+  var closeBtn = document.getElementById('navClose');
+  function openNav(){ panel.classList.add('open'); scrim.classList.add('open'); toggle.setAttribute('aria-expanded','true'); panel.setAttribute('aria-hidden','false'); }
+  function closeNav(){ panel.classList.remove('open'); scrim.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); panel.setAttribute('aria-hidden','true'); }
+  toggle.addEventListener('click', openNav);
+  closeBtn.addEventListener('click', closeNav);
+  scrim.addEventListener('click', closeNav);
+
+  fetch('data/menu.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(categories => {
+      const wrap = document.getElementById('menuContainer');
+      wrap.innerHTML = categories.map(cat => `
+        <section class="menu-section reveal">
+          <h2>${cat.category}</h2>
+          ${cat.items.map(it => `
+            <div class="menu-item">
+              <div><span class="name">${it.name}</span>${it.qty ? `<span class="qty">${it.qty}</span>` : ''}</div>
+              <span class="price">₹${it.price}</span>
+            </div>`).join('')}
+        </section>`).join('');
+      if (window.chubbyReveal) window.chubbyReveal.scan();
+    })
+    .catch(() => {
+      document.getElementById('menuContainer').innerHTML = '<p style="text-align:center; padding:40px;">Menu is being updated — please check back shortly, or message us on WhatsApp.</p>';
+    });
+</script>
+
+</body>
+</html>
