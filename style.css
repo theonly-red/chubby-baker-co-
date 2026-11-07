@@ -281,3 +281,7 @@ a:focus-visible, button:focus-visible{
   box-shadow: 0 6px 18px rgba(0,0,0,.28); transition: transform .15s ease;
 }
 .whatsapp-fab:hover{ transform: scale(1.08); }
+
+/* Skip link: hidden until keyboard-focused */
+.skip-link{ position:absolute; left:-9999px; top:0; z-index:1000; background:var(--cocoa); color:#fff; padding:10px 16px; border-radius:0 0 10px 0; text-decoration:none; }
+.skip-link:focus{ left:0; }
